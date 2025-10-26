@@ -1,4 +1,5 @@
-const { body, param } = require('express-validator');
+// validations/product.validator.js
+const { body, param, query } = require('express-validator');
 
 const productValidation = [
     body('name')
@@ -66,13 +67,52 @@ const productUpdateValidation = [
         .isLength({ max: 200 }).withMessage('Farm source cannot exceed 200 characters')
 ];
 
-const idValidation = [
-    param('id')
-        .isMongoId().withMessage('Invalid product ID')
+const stockUpdateValidation = [
+    body('stock')
+        .notEmpty().withMessage('Stock is required')
+        .isInt({ min: 0 }).withMessage('Stock must be a positive integer'),
+    body('operation')
+        .optional()
+        .isIn(['set', 'add', 'subtract']).withMessage('Operation must be set, add, or subtract')
 ];
+
+const bulkDeleteValidation = [
+    body('productIds')
+        .isArray({ min: 1 }).withMessage('Product IDs array is required and must not be empty')
+        .custom((value) => {
+            return value.every(id => /^[0-9a-fA-F]{24}$/.test(id));
+        }).withMessage('All product IDs must be valid MongoDB ObjectIds')
+];
+
+const bulkStockUpdateValidation = [
+    body('updates')
+        .isArray({ min: 1 }).withMessage('Updates array is required')
+        .custom((updates) => {
+            return updates.every(item =>
+                item.productId &&
+                /^[0-9a-fA-F]{24}$/.test(item.productId) &&
+                typeof item.stock === 'number' &&
+                item.stock >= 0
+            );
+        }).withMessage('Each update must have valid productId and stock')
+];
+
+
+const categoryValidation = [
+    param('category')
+        .isIn(['milk', 'ghee', 'paneer', 'curd', 'butter', 'cheese', 'other'])
+        .withMessage('Invalid category')
+];
+
+
 
 module.exports = {
     productValidation,
     productUpdateValidation,
-    idValidation
+    stockUpdateValidation,
+    bulkDeleteValidation,
+    bulkStockUpdateValidation,
+    idValidation,
+    categoryValidation,
+
 };

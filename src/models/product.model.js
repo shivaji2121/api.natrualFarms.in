@@ -18,8 +18,8 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Category is required'],
         enum: {
-            values: ['milk', 'ghee', 'paneer', 'curd', 'butter', 'cheese', 'other'],
-            message: 'Category must be one of: milk, ghee, paneer, curd, butter, cheese, other'
+            values: ['milk', 'ghee', 'paneer', 'curd', 'butter', 'cheese', 'honey', 'other'],
+            message: 'Category must be one of: milk, ghee, paneer, curd, butter, cheese, honey, other'
         }
     },
     price: {
@@ -76,10 +76,24 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: '',
         maxLength: [200, 'Farm source description cannot exceed 200 characters']
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: [true, 'Product creator is required']
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
 }, { timestamps: true });
 
 productSchema.index({ name: 'text', description: 'text' });
+
 productSchema.index({ category: 1, price: 1 });
+
+productSchema.index({ deletedAt: 1 });
+
+productSchema.index({ createdBy: 1 });
 
 module.exports = mongoose.model('Product', productSchema);

@@ -9,7 +9,7 @@ router.post('/register', userValidation.signupValidation, userController.registe
 router.post('/login', userValidation.loginValidation, userController.loginUser);
 router.get('/profile', userMiddleware.isAuthorized, userController.getUserProfile);
 router.put('/update', userMiddleware.isAuthorized, userValidation.profileUpdateValidation, userController.updateProfileById);
-router.put('/update-password', userMiddleware.isAuthorized, userValidation.passwordValidation, userController.updateUserPassword);
+router.patch('/update-password', userMiddleware.isAuthorized, userValidation.passwordValidation, userController.updateUserPassword);
 router.get('/customers', userMiddleware.isAuthorized, userMiddleware.isAdmin, userController.getAllUsers)
 router.delete('/:id/remove', userMiddleware.isAuthorized, userMiddleware.isAdmin, userController.softDeleteUser);
 router.get('/:id', userMiddleware.isAuthorized, userController.getUserById);
