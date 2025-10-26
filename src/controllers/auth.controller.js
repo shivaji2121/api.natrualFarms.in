@@ -184,3 +184,25 @@ module.exports.updateUserPassword = async (req, res, next) => {
 };
 
 
+module.exports.softDeleteUser = async (res, req, next) => {
+    try {
+        const userId = req.params.id;
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User id required' });
+        }
+
+        const user = await userModel.findOne({ _id: id, deletedAt: null });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await userModel.findByIdAndUpdate(userId, { deletedAt: new Date() }, { new: true });
+
+        return res.status(200).json({ message: "user deleted successfully" })
+    } catch (error) {
+        console.error('error: ', error);
+        return res.status(500).json({ message: "Internal server error" })
+    }
+}
