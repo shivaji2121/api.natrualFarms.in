@@ -4,6 +4,7 @@ const { body, param, query } = require('express-validator');
 const createProductValidation = [
     body('name')
         .trim()
+        .toLowerCase()
         .notEmpty().withMessage('Product name is required')
         .bail()
         .isLength({ min: 3, max: 100 }).withMessage('Product name must be between 3 and 100 characters'),

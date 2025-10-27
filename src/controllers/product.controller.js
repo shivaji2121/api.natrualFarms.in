@@ -13,7 +13,6 @@ module.exports.createProduct = async (req, res) => {
         }
 
         const { name, description, category, price, unit, stock, isOrganic, farmSource } = req.body;
-        console.log('req.body: ', JSON.parse(JSON.stringify(req.body)));
 
         const file = req.file;
 
@@ -53,7 +52,6 @@ module.exports.createProduct = async (req, res) => {
             farmSource,
             createdBy: req.user._id
         });
-        console.log('product: ', product);
 
         await product.populate('createdBy', 'name email');
 
