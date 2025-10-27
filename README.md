@@ -1,0 +1,2 @@
+pagination refernece-->🚀 QUICK REFERENCE
+ParameterTypeExampleDescriptionpagenumber?page=1Page numberpage_sizenumber?page_size=10Items per pagesearchstring?search=milkSearch textcategorystring?category=gheeFilter by categorymin_pricenumber?min_price=50Minimum pricemax_pricenumber?max_price=500Maximum pricemin_stocknumber?min_stock=10Minimum stockmax_stocknumber?max_stock=100Maximum stockin_stockboolean?in_stock=trueHas stock or notis_organicboolean?is_organic=trueOrganic or notunitstring?unit=literFilter by unitsortstring?sort=-priceSort field (- for descending)

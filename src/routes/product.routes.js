@@ -6,6 +6,6 @@ const productController = require('../controllers/product.controller');
 const userMiddleware = require('../middlewares/auth.middleware');
 
 productRouter.post('/create', userMiddleware.isAuthorized, userMiddleware.isAdmin, upload.single('image'), productValidation.createProductValidation, productController.createProduct);
-
+productRouter.get('/', userMiddleware.isAuthorized, productController.getAllProducts);
 
 module.exports = productRouter;
