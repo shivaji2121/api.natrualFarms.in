@@ -52,22 +52,10 @@ const productSchema = new mongoose.Schema({
             message: 'Stock must be a whole number'
         }
     },
-    images: [{
-        url: {
-            type: String,
-            required: [true, 'Image URL is required'],
-            validate: {
-                validator: function (v) {
-                    return /^https?:\/\/.+/.test(v);
-                },
-                message: 'Image URL must be valid'
-            }
-        },
-        publicId: {
-            type: String,
-            required: [true, 'Image public ID is required']
-        }
-    }],
+    image: {
+        type: String,
+        default: "",
+    },
     isOrganic: {
         type: Boolean,
         default: true
