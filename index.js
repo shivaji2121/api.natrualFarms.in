@@ -6,6 +6,7 @@ const connectToDb = require('./src/config/dbConfiguration');
 const cookieParser = require('cookie-parser');
 const userRouter = require('./src/routes/user.routes');
 const productRouter = require('./src/routes/product.routes');
+const cartRouter = require('./src/routes/cart.routes');
 const errorHandler = require('./src/utils/errorHandler');
 const path = require('path');
 const PORT = process.env.PORT || 3000;
@@ -24,7 +25,8 @@ app.get('/', (req, res) => {
 
 
 app.use('/user', userRouter);
-app.use('/product', productRouter)
+app.use('/product', productRouter);
+app.use('/cart', cartRouter);
 
 
 app.use(errorHandler);
