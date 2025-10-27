@@ -55,35 +55,49 @@ const createProductValidation = [
 
 const productUpdateValidation = [
     body('name')
-        .optional()
         .trim()
+        .toLowerCase()
+        .notEmpty().withMessage('Product name is required')
+        .bail()
         .isLength({ min: 3, max: 100 }).withMessage('Product name must be between 3 and 100 characters'),
+
     body('description')
-        .optional()
         .trim()
+        .notEmpty().withMessage('Description is required')
+        .bail()
         .isLength({ min: 10, max: 1000 }).withMessage('Description must be between 10 and 1000 characters'),
+
     body('category')
-        .optional()
         .trim()
-        .isIn(['milk', 'ghee', 'paneer', 'curd', 'butter', 'cheese', 'other'])
+        .notEmpty().withMessage('Category is required')
+        .isIn(['milk', 'cheese', 'yogurt', 'butter', 'cream', 'paneer', 'ghee', 'other'])
         .withMessage('Invalid category'),
+
     body('price')
-        .optional()
-        .isFloat({ min: 0, max: 100000 }).withMessage('Price must be between 0 and 100000'),
+        .notEmpty().withMessage('Price is required')
+        .isFloat({ min: 0.01 }).withMessage('Price must be greater than 0')
+        .toFloat(),
+
     body('unit')
-        .optional()
+        .trim()
+        .notEmpty().withMessage('Unit is required')
         .isIn(['liter', 'kg', 'gram', 'ml', 'piece', 'packet'])
         .withMessage('Invalid unit'),
+
     body('stock')
-        .optional()
-        .isInt({ min: 0 }).withMessage('Stock must be a positive integer'),
+        .notEmpty().withMessage('Stock is required')
+        .isInt({ min: 0 }).withMessage('Stock must be a non-negative integer')
+        .toInt(),
+
     body('isOrganic')
         .optional()
-        .isBoolean().withMessage('isOrganic must be true or false'),
+        .isBoolean().withMessage('isOrganic must be a boolean')
+        .toBoolean(),
+
     body('farmSource')
         .optional()
         .trim()
-        .isLength({ max: 200 }).withMessage('Farm source cannot exceed 200 characters')
+        .isLength({ max: 200 }).withMessage('Farm source must not exceed 200 characters')
 ];
 
 const stockUpdateValidation = [

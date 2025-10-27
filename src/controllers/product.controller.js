@@ -128,3 +128,75 @@ module.exports.getAllProducts = async (req, res, next) => {
         return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
     }
 };
+
+
+module.exports.updateProduct = async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ success: false, errors: errors.array() });
+        }
+        const productId = req.params.id;
+
+        const { name, description, category, price, unit, stock, isOrganic, farmSource } = req.body;
+
+        if (!productId) {
+            return res.status(400).json({ message: 'product id is required' });
+        }
+
+        const product = await productModel.findOne({ _id: productId, deletedAt: null });
+
+        if (!product) {
+            return res.status(404).json({ message: 'product not found' });
+        }
+
+        const result = await productModel.findByIdAndUpdate(productId, { name, description, category, price, unit, stock, isOrganic, farmSource }, { new: true });
+
+        return res.status(200).json({ success: true, message: "Products updated successfully", data: result });
+    } catch (error) {
+        console.error('Error in getAllProducts:', error);
+        return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    }
+}
+
+
+module.exports.getProductById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const product = await productModel.findOne({ _id: id, deletedAt: null });
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Product fetched successfully', data: product });
+    } catch (error) {
+        console.error('Error in getProductById:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    }
+};
+
+module.exports.softDeleteProduct = async (res, req, next) => {
+    try {
+        const productId = req.params.id;
+
+        if (!productId) {
+            return res.status(400).json({ message: 'Product id required' });
+        }
+
+        const product = await productModel.findOne({ _id: id, deletedAt: null });
+
+        if (!product) {
+            return res.status(404).json({ message: 'product not found' });
+        }
+
+        await productModel.findByIdAndUpdate(productId, { deletedAt: new Date() }, { new: true });
+
+        return res.status(200).json({ message: "Product deleted successfully" })
+    } catch (error) {
+        console.error('soft delte product: ', error);
+        return res.status(500).json({ message: "Internal server error" })
+    }
+}
