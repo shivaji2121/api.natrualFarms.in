@@ -1,6 +1,8 @@
 const razorpay = require('../config/razorpay.config');
 const crypto = require('crypto');
 const Order = require('../models/order.model');
+const orderService = require('../services/order.service');
+const paginationService = require('../utils/paginationHelper');
 
 // Create Razorpay order
 module.exports.createRazorpayOrder = async (req, res, next) => {
@@ -281,3 +283,65 @@ module.exports.handleWebhook = async (req, res) => {
         });
     }
 };
+
+
+
+module.exports.getAllOrders = async (req, res, next) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.page_size) || 10;
+        const search = req.query.search || '';
+        const sort = req.query.sort || '-createdAt';
+        const { paymentStatus, orderStatus, startDate, endDate } = req.query;
+
+        const filter = {};
+
+        if (search) {
+            filter.$or = [
+                { orderId: new RegExp(search, 'i') },
+                { 'user.name': new RegExp(search, 'i') },
+                { 'user.email': new RegExp(search, 'i') }
+            ];
+        }
+
+        if (paymentStatus) {
+            filter.paymentStatus = paymentStatus;
+        }
+        if (orderStatus) {
+            filter.orderStatus = orderStatus;
+        }
+
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) {
+                filter.createdAt.$gte = new Date(startDate);
+            }
+            if (endDate) {
+                filter.createdAt.$lte = new Date(endDate);
+            }
+        }
+
+        const skip = (page - 1) * pageSize;
+
+        const { orderRecords, totalRecords } = await orderService.getRecords(filter, sort, skip, pageSize);
+
+        const paginationInfo = paginationService.getPaginationData(page, pageSize, totalRecords);
+
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Orders fetched successfully",
+            data: {
+                paginationInfo,
+                orderRecords
+            }
+        });
+    } catch (error) {
+        console.error('Get Orders Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+}
