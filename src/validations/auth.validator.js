@@ -13,8 +13,7 @@ const signupValidation = [
         .normalizeEmail(),
     body('password')
         .notEmpty().withMessage('Password is required')
-        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain at least one uppercase, one lowercase, and one number'),
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
     body('phone')
         .trim()
         .notEmpty().withMessage('Phone number is required')
