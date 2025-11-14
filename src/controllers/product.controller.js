@@ -165,7 +165,7 @@ module.exports.getProductById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const product = await productModel.findOne({ _id: id, deletedAt: null });
+        const product = await productModel.findOne({ _id: id, deletedAt: null }).populate('createdBy', 'name email phone address');
 
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
